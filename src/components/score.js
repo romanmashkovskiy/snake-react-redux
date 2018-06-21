@@ -7,7 +7,7 @@ export default class Score extends Component {
 
         return (
             <div className="score">
-                <h2>1111</h2>
+                <h2>SCORE: {this.props.score}</h2>
             </div>
         );
     }

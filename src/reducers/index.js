@@ -1,8 +1,13 @@
 import {combineReducers} from 'redux';
-import directionReducer from './direction';
+import snakeReducer from './snake';
+import gameReducer from './game';
+import foodReducer from './food';
+
 
 const rootReducer = combineReducers({
-    direction: directionReducer
+    snake: snakeReducer,
+    game: gameReducer,
+    food: foodReducer
 });
 
 export default rootReducer;
