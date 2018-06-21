@@ -8,7 +8,8 @@ const INITIAL_STATE = {
         [Math.floor(NUM_COLUMNS)/2, 1],
         [Math.floor(NUM_COLUMNS/2), 2]
     ]
-}
+};
+
 export default function snakeReducer (state = INITIAL_STATE, action) {
     switch(action.type) {
         case actions.MOVE_SNAKE:
@@ -16,19 +17,16 @@ export default function snakeReducer (state = INITIAL_STATE, action) {
                 ...state,
                 coords: action.coords
             };
-
         case actions.SET_DIRECTION:
             return {
                 ...state,
                 direction: action.direction
             };
-
         case actions.PREPEND_SNAKE:
             return {
                 ...state,
                 coords: [[action.coords], ...state.coords]
             };
-
         case actions.NEW_GAME:
             return INITIAL_STATE;
         default:

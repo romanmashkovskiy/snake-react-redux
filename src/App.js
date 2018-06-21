@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import { setDirection, loseGame, incrementScore, prependSnake, newGame, setFood, moveSnake } from './actions/index';
-import './App.css';
 import Board from './components/board';
 import Food from './components/food';
-import Score from './components/score'
-import { NUM_COLUMNS, NUM_ROWS, GAME_SPEED } from './constants/index';
+import Score from './components/score';
 import Snake from "./components/snake";
+import { NUM_COLUMNS, NUM_ROWS, GAME_SPEED } from './constants/index';
+import { setDirection, loseGame, incrementScore, prependSnake, newGame, setFood, moveSnake } from './actions/index';
 import checkCollision from './utils/index';
+import './App.css';
 
 class App extends Component {
     constructor(props) {
@@ -47,9 +47,9 @@ class App extends Component {
         const snakeHeadCoords = snakeCoords[snakeCoords.length-1];
         const foodCoords = this.props.food;
         if(snakeHeadCoords[0] === foodCoords[0] && snakeHeadCoords[1] === foodCoords[1]) {
-            this.generateNewFood();
-            this.props.incrementScore();
-            this.props.prependSnake(snakeCoords[snakeCoords.length-1].slice());
+            //this.generateNewFood();
+            //this.props.incrementScore();
+            //this.props.prependSnake(snakeCoords[snakeCoords.length-1].slice());
         }
     }
 
@@ -75,27 +75,27 @@ class App extends Component {
 
             switch (e.keyCode) {
                 case 37:
-                    if (this.props.snake.direction !== 'right' && x !== 0)
+                    //if (this.props.snake.direction !== 'right' && x !== 0)
                     this.props.setDirection('left');
                     break;
                 case 39:
-                    if (this.props.snake.direction !== 'left' && x !== NUM_COLUMNS - 1)
+                    //if (this.props.snake.direction !== 'left' && x !== NUM_COLUMNS - 1)
                     this.props.setDirection('right');
                     break;
                 case 40:
-                    if (this.props.snake.direction !== 'up' && y !== NUM_ROWS - 1)
+                    //if (this.props.snake.direction !== 'up' && y !== NUM_ROWS - 1)
                     this.props.setDirection('down');
                     break;
                 case 38:
-                    if (this.props.snake.direction !== 'down' && y !== 0)
+                    //if (this.props.snake.direction !== 'down' && y !== 0)
                     this.props.setDirection('up');
                     break;
                 case 32:
-                    if(this.props.game.lost) return false;
+                    //if(this.props.game.lost) return false;
                     clearInterval(this.snakeInterval);
                     this.snakeInterval = setInterval(() => {
                         this.props.setDirection(this.props.snake.direction);
-                        this.props.moveSnake(this.props.snake);
+                        //this.props.moveSnake(this.props.snake);
                     }, GAME_SPEED);
                     break;
             }
@@ -108,11 +108,12 @@ class App extends Component {
             <div>
                 <Score score={this.props.game.score}/>
                 <div className="board-wrapper">
-                <Board/>
-                <Snake coords={this.props.snake.coords} lost={this.props.game.lost} />
-                <Food coords={this.props.food}/>
-                {this.props.game.lost && <button onClick={this.resetGame} className="reset">Reset</button>}
+                    <Board/>
+                    <Snake coords={this.props.snake.coords} lost={this.props.game.lost} />
+                    <Food coords={this.props.food}/>
+                    {this.props.game.lost && <button onClick={this.resetGame} className="reset">Reset</button>}
                 </div>
+                <h3 className="help">Press start to begin</h3>
             </div>
         );
     }
