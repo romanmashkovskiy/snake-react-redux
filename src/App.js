@@ -5,7 +5,7 @@ import Board from './components/board';
 import Food from './components/food';
 import Score from './components/score';
 import Snake from "./components/snake";
-import { NUM_COLUMNS, NUM_ROWS, GAME_SPEED } from './constants/index';
+import { NUM_COLUMNS, NUM_ROWS, GAME_SPEED, INITIAL_DIRECTION } from './constants/index';
 import { setDirection, loseGame, incrementScore, prependSnake, newGame, setFood, moveSnake } from './actions/index';
 import checkCollision from './utils/index';
 import './App.css';
@@ -13,7 +13,6 @@ import './App.css';
 class App extends Component {
     constructor(props) {
         super(props);
-        this.checkGameLoss = this.checkGameLoss.bind(this);
         this.resetGame = this.resetGame.bind(this);
     }
 
@@ -23,7 +22,7 @@ class App extends Component {
     }
 
     componentDidUpdate() {
-        this.checkFoodCollision();
+        this.checkFoodCapture();
         this.checkGameLoss();
     }
 
@@ -36,20 +35,21 @@ class App extends Component {
             snakeHeadCoords[0] === NUM_COLUMNS ||
             snakeHeadCoords[1] === -1 ||
             snakeHeadCoords[1] === NUM_ROWS ||
-                checkCollision(snakeHeadCoords, snakeCoords.slice(0, -1)))) {
+            checkCollision(snakeHeadCoords, snakeCoords.slice(0, -1))))
+        {
             clearInterval(this.snakeInterval);
             this.props.loseGame();
         }
     }
 
-    checkFoodCollision() {
+    checkFoodCapture() {
         const snakeCoords = this.props.snake.coords;
         const snakeHeadCoords = snakeCoords[snakeCoords.length-1];
         const foodCoords = this.props.food;
         if(snakeHeadCoords[0] === foodCoords[0] && snakeHeadCoords[1] === foodCoords[1]) {
-            //this.generateNewFood();
-            //this.props.incrementScore();
-            //this.props.prependSnake(snakeCoords[snakeCoords.length-1].slice());
+            this.generateNewFood();
+            this.props.incrementScore();
+            this.props.prependSnake(snakeCoords[snakeCoords.length-1].slice());
         }
     }
 
@@ -57,13 +57,13 @@ class App extends Component {
         this.props.newGame();
         this.generateNewFood();
         clearInterval(this.snakeInterval);
-        this.props.setDirection('down');
+        this.props.setDirection(INITIAL_DIRECTION);
     }
 
     generateNewFood() {
         const x = Math.floor(Math.random() * NUM_COLUMNS);
         const y = Math.floor(Math.random() * NUM_ROWS);
-        if (checkCollision([x, y], this.props.snake.coords)) this.generateNewFood()
+        if (checkCollision([x, y], this.props.snake.coords)) this.generateNewFood();
         else this.props.setFood([x, y]);
     }
 
@@ -73,35 +73,48 @@ class App extends Component {
             const x = coords[coords.length-1][0];
             const y = coords[coords.length-1][1];
 
-            switch (e.keyCode) {
-                case 37:
-                    //if (this.props.snake.direction !== 'right' && x !== 0)
-                    this.props.setDirection('left');
+            switch (e.code) {
+                case "KeyA":
+                case 'ArrowLeft':
+                {
+                    if (this.props.snake.direction !== 'right' && x !== 0)
+                        this.props.setDirection('left');
                     break;
-                case 39:
-                    //if (this.props.snake.direction !== 'left' && x !== NUM_COLUMNS - 1)
-                    this.props.setDirection('right');
+                }
+                case "KeyD":
+                case 'ArrowRight':
+                {
+                    if (this.props.snake.direction !== 'left' && x !== NUM_COLUMNS - 1)
+                        this.props.setDirection('right');
                     break;
-                case 40:
-                    //if (this.props.snake.direction !== 'up' && y !== NUM_ROWS - 1)
-                    this.props.setDirection('down');
+                }
+                case "KeyS":
+                case 'ArrowDown':
+                {
+                    if (this.props.snake.direction !== 'up' && y !== NUM_ROWS - 1)
+                        this.props.setDirection('down');
                     break;
-                case 38:
-                    //if (this.props.snake.direction !== 'down' && y !== 0)
-                    this.props.setDirection('up');
+                }
+                case "KeyW":
+                case 'ArrowUp':
+                {
+                    if (this.props.snake.direction !== 'down' && y !== 0)
+                        this.props.setDirection('up');
                     break;
-                case 32:
-                    //if(this.props.game.lost) return false;
+                }
+                case 'Space':
+                {
+                    if(this.props.game.lost) return false;
                     clearInterval(this.snakeInterval);
                     this.snakeInterval = setInterval(() => {
                         this.props.setDirection(this.props.snake.direction);
-                        //this.props.moveSnake(this.props.snake);
+                        this.props.moveSnake(this.props.snake);
                     }, GAME_SPEED);
                     break;
+                }
             }
         })
     }
-
 
     render() {
         return (
@@ -113,7 +126,7 @@ class App extends Component {
                     <Food coords={this.props.food}/>
                     {this.props.game.lost && <button onClick={this.resetGame} className="reset">Reset</button>}
                 </div>
-                <h3 className="help">Press start to begin</h3>
+                <h3 className="help">Press spacebar to begin</h3>
             </div>
         );
     }
