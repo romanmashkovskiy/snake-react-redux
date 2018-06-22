@@ -5,8 +5,8 @@ import Board from './components/board';
 import Food from './components/food';
 import Score from './components/score';
 import Snake from "./components/snake";
-import { NUM_COLUMNS, NUM_ROWS, GAME_SPEED, INITIAL_DIRECTION } from './constants/index';
-import { setDirection, loseGame, incrementScore, prependSnake, newGame, setFood, moveSnake } from './actions/index';
+import { NUM_COLUMNS, NUM_ROWS, INITIAL_DIRECTION } from './constants/index';
+import { setDirection, loseGame, incrementScore, prependSnake, newGame, setFood, moveSnake, setGameSpeed } from './actions/index';
 import checkCollision from './utils/index';
 import './App.css';
 
@@ -49,6 +49,7 @@ class App extends Component {
         if(snakeHeadCoords[0] === foodCoords[0] && snakeHeadCoords[1] === foodCoords[1]) {
             this.generateNewFood();
             this.props.incrementScore();
+            this.props.setGameSpeed(this.props.game.score);
             this.props.prependSnake(snakeCoords[snakeCoords.length-1].slice());
         }
     }
@@ -65,6 +66,7 @@ class App extends Component {
         const y = Math.floor(Math.random() * NUM_ROWS);
         if (checkCollision([x, y], this.props.snake.coords)) this.generateNewFood();
         else this.props.setFood([x, y]);
+
     }
 
     setControls() {
@@ -106,10 +108,11 @@ class App extends Component {
                 {
                     if(this.props.game.lost) return false;
                     clearInterval(this.snakeInterval);
+
                     this.snakeInterval = setInterval(() => {
                         this.props.setDirection(this.props.snake.direction);
                         this.props.moveSnake(this.props.snake);
-                    }, GAME_SPEED);
+                    }, this.props.game.speed);
                     break;
                 }
             }
@@ -148,7 +151,8 @@ function matchDispatchToProps (dispatch) {
             prependSnake: prependSnake,
             newGame: newGame,
             setFood: setFood,
-            moveSnake: moveSnake
+            moveSnake: moveSnake,
+            setGameSpeed: setGameSpeed
         },
         dispatch)
 }

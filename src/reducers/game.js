@@ -1,6 +1,8 @@
 import * as actions from '../actions/action-types';
+import { INITIAL_GAME_SPEED } from '../constants/index';
 
 const INITIAL_STATE = {
+    speed: INITIAL_GAME_SPEED,
     lost: false,
     score: 0
 };
@@ -22,6 +24,11 @@ export default function gameReducer(state = INITIAL_STATE, action) {
             return {
                 ...state,
                 score: state.score + 1
+            };
+        case actions.INCREASE_SPEED:
+            return {
+                ...state,
+                speed: Math.floor(INITIAL_GAME_SPEED/(INITIAL_GAME_SPEED + 100*action.payload) * INITIAL_GAME_SPEED)
             };
         default: return state;
     }

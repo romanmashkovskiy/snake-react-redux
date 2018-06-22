@@ -57,3 +57,10 @@ export function incrementScore() {
         type: actions.INCREMENT_SCORE
     }
 }
+
+export function setGameSpeed(score) {
+    return {
+        type: actions.INCREASE_SPEED,
+        payload: score
+    }
+}
