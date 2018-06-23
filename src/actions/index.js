@@ -63,3 +63,10 @@ export function setGameSpeed() {
         type: actions.INCREASE_SPEED
     }
 }
+
+export function showHelp(status) {
+    return {
+        type: actions.SHOW_HELP,
+        payload: status
+    }
+}

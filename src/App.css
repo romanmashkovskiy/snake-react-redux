@@ -10,6 +10,8 @@ body {
 }
 
 .board-wrapper {
+    float: left;
+    width: 600px;
     position: relative;
     display: inline-block;
     margin: 10px;
@@ -55,6 +57,15 @@ body {
     transform: translate(-50%, -50%);
 }
 
-.score, .help {
+.score {
     margin: 10px;
+}
+
+.help {
+    margin-left: 700px;
+    margin-top: 10px;
+}
+
+h3.help  {
+    margin-left: 700px;
 }

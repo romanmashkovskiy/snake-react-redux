@@ -6,7 +6,7 @@ import Food from './components/food';
 import Score from './components/score';
 import Snake from "./components/snake";
 import { NUM_COLUMNS, NUM_ROWS, INITIAL_DIRECTION } from './constants/index';
-import { setDirection, loseGame, incrementScore, prependSnake, newGame, setFood, moveSnake, setGameSpeed } from './actions/index';
+import { setDirection, loseGame, incrementScore, prependSnake, newGame, setFood, moveSnake, setGameSpeed, showHelp } from './actions/index';
 import checkCollision from './utils/index';
 import './App.css';
 
@@ -82,6 +82,8 @@ class App extends Component {
             const x = coords[coords.length-1][0];
             const y = coords[coords.length-1][1];
 
+            console.log(e.code);
+
             switch (e.code) {
                 case "KeyA":
                 case 'ArrowLeft':
@@ -117,6 +119,17 @@ class App extends Component {
                     setTimeout(this.moveGame, this.props.game.speed);
                     break;
                 }
+                case 'F1':
+                {
+                    e.preventDefault();
+                    this.props.showHelp(true);
+                    break;
+                }
+                case 'Escape':
+                {
+                    this.props.showHelp(false);
+                    break;
+                }
             }
         })
     }
@@ -131,7 +144,18 @@ class App extends Component {
                     <Food coords={this.props.food}/>
                     {this.props.game.lost && <button onClick={this.resetGame} className="reset">Reset</button>}
                 </div>
-                <h3 className="help">Press spacebar to begin</h3>
+                <h3 className="help">Press Space to begin or F1 to see help</h3>
+                {this.props.game.help &&
+                <div className="help">
+                    <ul>
+                        <li>Press Space to begin</li>
+                        <li>Press A or ArrowLeft to move snake to the left</li>
+                        <li>Press W or ArrowUp to move snake up</li>
+                        <li>Press D or ArrowRight to move snake to the right</li>
+                        <li>Press S or ArrowDown to move snake down</li>
+                        <li>Press Escape to exit help</li>
+                    </ul>
+                </div>}
             </div>
         );
     }
@@ -154,7 +178,8 @@ function matchDispatchToProps (dispatch) {
             newGame: newGame,
             setFood: setFood,
             moveSnake: moveSnake,
-            setGameSpeed: setGameSpeed
+            setGameSpeed: setGameSpeed,
+            showHelp: showHelp
         },
         dispatch)
 }
