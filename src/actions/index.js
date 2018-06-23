@@ -58,9 +58,8 @@ export function incrementScore() {
     }
 }
 
-export function setGameSpeed(score) {
+export function setGameSpeed() {
     return {
-        type: actions.INCREASE_SPEED,
-        payload: score
+        type: actions.INCREASE_SPEED
     }
 }

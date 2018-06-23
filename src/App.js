@@ -14,6 +14,7 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.resetGame = this.resetGame.bind(this);
+        this.moveGame = this.moveGame.bind(this);
     }
 
     componentWillMount() {
@@ -37,7 +38,6 @@ class App extends Component {
             snakeHeadCoords[1] === NUM_ROWS ||
             checkCollision(snakeHeadCoords, snakeCoords.slice(0, -1))))
         {
-            clearInterval(this.snakeInterval);
             this.props.loseGame();
         }
     }
@@ -49,15 +49,14 @@ class App extends Component {
         if(snakeHeadCoords[0] === foodCoords[0] && snakeHeadCoords[1] === foodCoords[1]) {
             this.generateNewFood();
             this.props.incrementScore();
-            this.props.setGameSpeed(this.props.game.score);
             this.props.prependSnake(snakeCoords[snakeCoords.length-1].slice());
+            this.props.setGameSpeed();
         }
     }
 
     resetGame() {
         this.props.newGame();
         this.generateNewFood();
-        clearInterval(this.snakeInterval);
         this.props.setDirection(INITIAL_DIRECTION);
     }
 
@@ -67,6 +66,14 @@ class App extends Component {
         if (checkCollision([x, y], this.props.snake.coords)) this.generateNewFood();
         else this.props.setFood([x, y]);
 
+    }
+
+    moveGame() {
+        this.props.setDirection(this.props.snake.direction);
+        this.props.moveSnake(this.props.snake);
+        if (!this.props.game.lost) {
+            setTimeout(this.moveGame, this.props.game.speed);
+        }
     }
 
     setControls() {
@@ -107,12 +114,7 @@ class App extends Component {
                 case 'Space':
                 {
                     if(this.props.game.lost) return false;
-                    clearInterval(this.snakeInterval);
-
-                    this.snakeInterval = setInterval(() => {
-                        this.props.setDirection(this.props.snake.direction);
-                        this.props.moveSnake(this.props.snake);
-                    }, this.props.game.speed);
+                    setTimeout(this.moveGame, this.props.game.speed);
                     break;
                 }
             }

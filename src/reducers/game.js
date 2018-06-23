@@ -17,8 +17,9 @@ export default function gameReducer(state = INITIAL_STATE, action) {
         case actions.NEW_GAME:
             return {
                 ...state,
-                score: 0,
-                lost: false
+                speed: INITIAL_GAME_SPEED,
+                lost: false,
+                score: 0
             };
         case actions.INCREMENT_SCORE:
             return {
@@ -28,7 +29,7 @@ export default function gameReducer(state = INITIAL_STATE, action) {
         case actions.INCREASE_SPEED:
             return {
                 ...state,
-                speed: Math.floor(INITIAL_GAME_SPEED/(INITIAL_GAME_SPEED + 100*action.payload) * INITIAL_GAME_SPEED)
+                speed: Math.round(INITIAL_GAME_SPEED/(INITIAL_GAME_SPEED + state.score) * INITIAL_GAME_SPEED)
             };
         default: return state;
     }
